@@ -1,5 +1,6 @@
 package penguin.core;
 
+
 public class Penguin {
     // Position
     public double x, y;
@@ -44,6 +45,7 @@ public class Penguin {
         ax += fx;
         ay += fy;
     }
+
     public void flock(Penguin[] penguins) {
         double[] alignment = align(penguins);
         double[] cohesion = cohere(penguins);
@@ -53,6 +55,7 @@ public class Penguin {
         applyForce(cohesion[0], cohesion[1]);
         applyForce(separation[0], separation[1]);
     }
+
     private double[] align(Penguin[] penguins) {
         double steeringX = 0;
         double steeringY = 0;
@@ -80,5 +83,70 @@ public class Penguin {
             }
         }
         return new double[]{steeringX, steeringY};
+    }
+
+    private double[] cohere(Penguin[] penguins) {
+        double centerX = 0;
+        double centerY = 0;
+        int total = 0;
+        for (Penguin other : penguins) {
+            double d = distance(other);
+            if (other != this && d < perceptionRadius) {
+                centerX += other.x;
+                centerY += other.y;
+                total++;
+            }
+        }
+        double steeringX = 0, steeringY = 0;
+        if (total > 0) {
+            centerX /= total;
+            centerY /= total;
+            steeringX = centerX - x;
+            steeringY = centerY - y;
+            double mag = Math.sqrt(steeringX * steeringX + steeringY * steeringY);
+            if (mag > 0) {
+                steeringX = (steeringX / mag) * maxSpeed - vx;
+                steeringY = (steeringY / mag) * maxSpeed - vy;
+                mag = Math.sqrt(steeringX * steeringX + steeringY * steeringY);
+                if (mag > maxForce) {
+                    steeringX = (steeringX / mag) * maxForce;
+                    steeringY = (steeringY / mag) * maxForce;
+                }
+            }
+        }
+        return new double[]{steeringX, steeringY};
+    }
+
+    private double[] separate(Penguin[] penguins) {
+        double steeringX = 0;
+        double steeringY = 0;
+        int total = 0;
+        for (Penguin other : penguins) {
+            double d = distance(other);
+            if (other != this && d < perceptionRadius / 2) { // shorter range
+                steeringX += (x - other.x) / d; // weighted by distance
+                steeringY += (y - other.y) / d;
+                total++;
+            }
+        }
+        if (total > 0) {
+            steeringX /= total;
+            steeringY /= total;
+            double mag = Math.sqrt(steeringX * steeringX + steeringY * steeringY);
+            if (mag > 0) {
+                steeringX = (steeringX / mag) * maxSpeed - vx;
+                steeringY = (steeringY / mag) * maxSpeed - vy;
+                mag = Math.sqrt(steeringX * steeringX + steeringY * steeringY);
+                if (mag > maxForce) {
+                    steeringX = (steeringX / mag) * maxForce;
+                    steeringY = (steeringY / mag) * maxForce;
+                }
+            }
+        }
+        return new double[]{steeringX, steeringY};
+    }
+
+    double distance(Penguin other) {
+        return Math.sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
     }
 }
