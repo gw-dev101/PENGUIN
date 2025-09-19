@@ -1,15 +1,9 @@
 plugins {
+    id 'application'
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
-group = 'penguin.graphics'
-version = '1.0-SNAPSHOT'
-repositories {
-    mavenCentral()
-}
-dependencies {
-    // Add your dependencies here
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
-}
-test {
-    useJUnitPlatform()
+
+application {
+    mainClass = 'penguin.graphics.Renderer'
 }
