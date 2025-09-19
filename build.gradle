@@ -1,0 +1,15 @@
+plugins {
+    id 'java'
+}
+group = 'penguin.graphics'
+version = '1.0-SNAPSHOT'
+repositories {
+    mavenCentral()
+}
+dependencies {
+    // Add your dependencies here
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+}
+test {
+    useJUnitPlatform()
+}
