@@ -149,4 +149,6 @@ public class Penguin {
     double distance(Penguin other) {
         return Math.sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
     }
+
+    
 }
