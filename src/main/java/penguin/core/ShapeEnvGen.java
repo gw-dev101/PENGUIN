@@ -21,26 +21,37 @@ public final class ShapeEnvGen extends EnvironmentGenerator {
         switch(shape){
             case CIRCLE:
                 // Generate circular environment
-                return new Environment(width, height);
+                return new Environment(width, height).populate(this);
             case SQUARE:
                 // Generate square environment
-                return new Environment(width, height);
+                return new Environment(width, height).populate(this);
             case TRIANGLE:
                 // Generate triangular environment
-                return new Environment(width, height);
+                return new Environment(width, height).populate(this);
             default:
                 throw new IllegalArgumentException("Unsupported shape");
         }
     }
     @Override
     public void populate(Environment environment){
-        // Populate environment with entities based on shape
-        // This is a placeholder implementation
+        for(int x = 0; x < environment.getWidth(); x++){
+            for(int y = 0; y < environment.getHeight(); y++){
+                if(Shape.isPointInsideShape(shape, Math.min(environment.getWidth(), environment.getHeight()), x - environment.getWidth()/2, y - environment.getHeight()/2)){
+                    // Populate with terrain ice inside WATER outside
+                    environment.setTerrainType(x, y, TerrainType.ICE);
+                } else {
+                    environment.setTerrainType(x, y, TerrainType.WATER);
+                }
+            }
+        }
     }
     @Override
     public TerrainType getTerrainType(int x, int y){
-        // Determine terrain type based on shape and coordinates
-        // This is a placeholder implementation
-        return TerrainType.ICE;
+        // Deterministically get terrain type based on shape
+        if(Shape.isPointInsideShape(shape, 100, x - 50, y - 50)){
+            return TerrainType.ICE;
+        } else {
+            return TerrainType.WATER;
     }
+}
 }
